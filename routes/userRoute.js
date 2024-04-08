@@ -1,33 +1,39 @@
-import { Router } from "express";
+import express from "express";
+const router = express.Router();
+import { isAuthenticated, authorizeRoles } from "../middleware/";
 
-import {isAuthenticated,authorizeRoles} from "../middleware/"
+import {
+  registerUser,
+  loginUser,
+  getUserDetails,
+  UpdatePassword,
+  UpdateProfile,
+  getAllUsers,
+  getSingleUser,
+  UpdateUserRole,
+  deleteUser,
+} from "../controllers/userController";
 
-import {registerUser,loginUser,getUserDetails,UpdatePassword,UpdateProfile,getAllUsers,getSingleUser,UpdateUserRole,deleteUser}
-from "../controllers/userController"
+router.route("/register").post(registerUser);
 
+router.route("/login").post(loginUser);
 
+router.route("/me").get(isAuthenticated, getUserDetails);
 
+router.route("/password/update").put(isAuthenticated, UpdatePassword);
 
-Router.route("/register").post(registerUser);
+router.route("/me/update").put(isAuthenticated, UpdateProfile);
 
-Router.route("/login").post(loginUser);
-
-Router.route("/me").get(isAuthenticated, getUserDetails);
-
-Router.route("/password/update").put(isAuthenticated, UpdatePassword);
-
-Router.route("/me/update").put(isAuthenticated, UpdateProfile);
-
-Router
+router
   .route("/admin/users")
   .get(isAuthenticated, authorizeRoles("admin"), getAllUsers);
 
-Router
+router
   .route("/admin/users/:id")
   .get(isAuthenticated, authorizeRoles("admin"), getSingleUser)
   .put(isAuthenticated, authorizeRoles("admin"), UpdateUserRole)
   .delete(isAuthenticated, authorizeRoles("admin"), deleteUser);
 
-// Router.route("/password/forgot").post(forgotPassword);
+// router.route("/password/forgot").post(forgotPassword);
 
-module.exports = Router;
+export default router;

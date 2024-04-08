@@ -1,9 +1,12 @@
 import express from "express";
+import dbConnect from "./config/dbConfig.js"
 process.loadEnvFile()
 
 const port = process.env.PORT
-const app = express();
 
+dbConnect()
+
+const app = express();
 
 
 app.listen(port, () => {
